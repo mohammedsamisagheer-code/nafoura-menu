@@ -48,13 +48,9 @@ export default function DeliveryForm() {
       const data = await resp.json()
 
       if (!resp.ok || !data.success) {
-        throw new Error(data.error || data.detail?.description || "فشل إرسال الطلب، تحقق من البوت")
+        throw new Error()
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "حدث خطأ في إرسال الطلب")
-      setSending(false)
-      return
-    } finally {
+
       clearCart()
       setName("")
       setPhone("")
@@ -63,6 +59,9 @@ export default function DeliveryForm() {
       setAddress("طرابلس، ليبيا")
       setDeliveryModalOpen(false)
       setSuccessOpen(true)
+    } catch {
+      setError("فشل إرسال الطلب")
+    } finally {
       setSending(false)
     }
   }
