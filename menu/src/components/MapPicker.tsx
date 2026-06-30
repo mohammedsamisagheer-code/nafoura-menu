@@ -13,10 +13,10 @@ interface Props {
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   try {
     const resp = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ar`
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${CONFIG.googleMapsApiKey}&language=ar`
     )
     const data = await resp.json()
-    return data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`
+    return data.results?.[0]?.formatted_address || `${lat.toFixed(4)}, ${lng.toFixed(4)}`
   } catch {
     return `${lat.toFixed(4)}, ${lng.toFixed(4)}`
   }

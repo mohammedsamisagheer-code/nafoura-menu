@@ -25,7 +25,7 @@ function formatOrderMessage(p: OrderPayload): string {
     .map((i) => `• ${i.name} × ${i.qty} = ${i.price * i.qty} د.ل`)
     .join("\n");
 
-  const mapLink = `https://www.openstreetmap.org/?mlat=${p.customer.lat}&mlon=${p.customer.lng}#map=16/${p.customer.lat}/${p.customer.lng}`;
+  const mapLink = `https://www.google.com/maps?q=${p.customer.lat},${p.customer.lng}`;
 
   return [
     "السلام عليكم، طلب جديد من مطعم النافورة 🍽",
