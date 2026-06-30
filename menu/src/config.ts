@@ -1,6 +1,7 @@
 export const CONFIG = {
   restaurantName: "مطعم النافورة",
   phone: "0910000000",
+  whatsappNumber: "218000000000",
   deliveryFee: Number(import.meta.env.VITE_DELIVERY_FEE) || 5,
   mapCenter: { lat: 32.8752, lng: 13.1875 },
   currency: "د.ل",

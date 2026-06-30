@@ -47,13 +47,11 @@ export default function DeliveryForm() {
 
       const data = await resp.json()
 
-      if (!data.success) {
-        console.warn("Order delivery warning (check Telegram env vars):", data)
+      if (data.useWaMe && data.waMeUrl) {
+        window.open(data.waMeUrl, "_blank")
       }
     } catch (err) {
-      // If the function is not available (e.g. local dev without netlify dev),
-      // still show success — the order is logged to console for debugging
-      console.warn("Telegram function unavailable — order logged to console instead.")
+      console.warn("Send-order function unavailable — order logged to console instead.")
       console.log("ORDER DATA:", { items, subtotal, deliveryFee: CONFIG.deliveryFee, total, customer: { name: name.trim(), phone: phone.trim(), notes: notes.trim(), lat: position.lat, lng: position.lng, address } })
     } finally {
       clearCart()
@@ -148,7 +146,7 @@ export default function DeliveryForm() {
               disabled={sending}
               className="w-full bg-brand-400 text-white py-3 rounded-full text-sm font-bold flex items-center justify-center gap-2 hover:bg-brand-500 transition-colors disabled:opacity-60"
             >
-              {sending ? "جارٍ الإرسال..." : "📱 تأكيد الطلب عبر التيليغرام"}
+              {sending ? "جارٍ الإرسال..." : "📱 تأكيد الطلب عبر واتساب"}
             </button>
           </div>
         </div>
