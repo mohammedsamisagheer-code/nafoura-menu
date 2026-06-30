@@ -17,7 +17,7 @@ export default function OrderConfirmation() {
         <div className="text-5xl mb-4">✅</div>
         <h2 className="text-xl font-black text-[#2a9d5c] mb-2.5">تم إرسال طلبك!</h2>
         <p className="text-sm text-fg-muted leading-relaxed mb-7">
-          سيتم التواصل معك على التيليغرام لتأكيد الطلب وتحديد موعد التوصيل
+           سيتم التواصل معك على واتساب لتأكيد الطلب وتحديد موعد التوصيل
         </p>
         <button
           onClick={handleNewOrder}
