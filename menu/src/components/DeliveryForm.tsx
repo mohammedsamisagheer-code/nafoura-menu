@@ -45,11 +45,7 @@ export default function DeliveryForm() {
         body: JSON.stringify(payload),
       })
 
-      const data = await resp.json()
-
-      if (data.useWaMe && data.waMeUrl) {
-        window.open(data.waMeUrl, "_blank")
-      }
+      await resp.json()
     } catch (err) {
       console.warn("Send-order function unavailable — order logged to console instead.")
       console.log("ORDER DATA:", { items, subtotal, deliveryFee: CONFIG.deliveryFee, total, customer: { name: name.trim(), phone: phone.trim(), notes: notes.trim(), lat: position.lat, lng: position.lng, address } })
@@ -146,7 +142,7 @@ export default function DeliveryForm() {
               disabled={sending}
               className="w-full bg-brand-400 text-white py-3 rounded-full text-sm font-bold flex items-center justify-center gap-2 hover:bg-brand-500 transition-colors disabled:opacity-60"
             >
-              {sending ? "جارٍ الإرسال..." : "📱 تأكيد الطلب عبر واتساب"}
+              {sending ? "جارٍ الإرسال..." : "📱 تأكيد الطلب عبر التيليغرام"}
             </button>
           </div>
         </div>
