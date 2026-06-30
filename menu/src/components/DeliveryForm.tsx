@@ -45,10 +45,15 @@ export default function DeliveryForm() {
         body: JSON.stringify(payload),
       })
 
-      await resp.json()
+      const data = await resp.json()
+
+      if (!resp.ok || !data.success) {
+        throw new Error(data.error || data.detail?.description || "فشل إرسال الطلب، تحقق من البوت")
+      }
     } catch (err) {
-      console.warn("Send-order function unavailable — order logged to console instead.")
-      console.log("ORDER DATA:", { items, subtotal, deliveryFee: CONFIG.deliveryFee, total, customer: { name: name.trim(), phone: phone.trim(), notes: notes.trim(), lat: position.lat, lng: position.lng, address } })
+      setError(err instanceof Error ? err.message : "حدث خطأ في إرسال الطلب")
+      setSending(false)
+      return
     } finally {
       clearCart()
       setName("")

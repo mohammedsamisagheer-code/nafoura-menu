@@ -47,9 +47,37 @@ function formatOrderMessage(p: OrderPayload): string {
     .join("\n")
 }
 
-export async function handler(event: { body: string }) {
+export async function handler(event: { httpMethod: string; body: string }) {
   const token = process.env.TELEGRAM_BOT_TOKEN
   const chatId = process.env.TELEGRAM_CHAT_ID
+
+  // GET — health check to verify credentials
+  if (event.httpMethod === "GET") {
+    if (!token) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ok: false, error: "TELEGRAM_BOT_TOKEN not set" }),
+      }
+    }
+    try {
+      const resp = await fetch(`https://api.telegram.org/bot${token}/getMe`)
+      const data = await resp.json()
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          ok: data.ok,
+          bot: data.ok ? data.result.username : null,
+          chatIdConfigured: !!chatId,
+          error: data.ok ? null : data.description,
+        }),
+      }
+    } catch (err) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ok: false, error: String(err) }),
+      }
+    }
+  }
 
   if (!token || !chatId) {
     return {
