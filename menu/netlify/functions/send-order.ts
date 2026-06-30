@@ -1,4 +1,3 @@
-/* eslint-disable */
 // Netlify Function: sends order to Telegram Bot API
 // Set env vars in Netlify dashboard or .env:
 //   TELEGRAM_BOT_TOKEN=your_bot_token
@@ -20,8 +19,8 @@ interface OrderPayload {
 }
 
 export async function handler(event: { body: string }) {
-  const token = process.env.TELEGRAM_BOT_TOKEN
-  const chatId = process.env.TELEGRAM_CHAT_ID
+  const token = process.env.TELEGRAM_BOT_TOKEN || "8772773266:AAGy1YU6WJAWoSc0v3uj71UfBV-GVzHGKeQ"
+  const chatId = process.env.TELEGRAM_CHAT_ID || "1013575938"
 
   if (!token || !chatId) {
     return {
@@ -40,7 +39,10 @@ export async function handler(event: { body: string }) {
   const { customer, items, subtotal, deliveryFee, total } = payload
 
   if (!customer.name || !customer.phone) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Missing required fields" }) }
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Missing required fields" }),
+    }
   }
 
   const itemsText = items
@@ -49,38 +51,33 @@ export async function handler(event: { body: string }) {
 
   const mapLink = `https://www.openstreetmap.org/?mlat=${customer.lat}&mlon=${customer.lng}#map=16/${customer.lat}/${customer.lng}`
 
-  const message = `
-السلام عليكم، طلب جديد من مطعم النافورة 🍽
-
-👤 الاسم: ${customer.name}
-📞 الهاتف: ${customer.phone}
-📍 العنوان: ${customer.address}
-🗺 الموقع: ${mapLink}
-${customer.notes ? `📝 ملاحظات: ${customer.notes}` : ""}
-
-الطلبات:
-${itemsText}
----
-المجموع الفرعي: ${subtotal} د.ل
-رسوم التوصيل: ${deliveryFee} د.ل
-الإجمالي: ${total} د.ل
-
-شكراً لكم 🙏
-  `.trim()
+  const message = [
+    "السلام عليكم، طلب جديد من مطعم النافورة 🍽",
+    "",
+    `👤 الاسم: ${customer.name}`,
+    `📞 الهاتف: ${customer.phone}`,
+    `📍 العنوان: ${customer.address}`,
+    `🗺 الموقع: ${mapLink}`,
+    customer.notes ? `📝 ملاحظات: ${customer.notes}` : "",
+    "",
+    "الطلبات:",
+    itemsText,
+    "---",
+    `المجموع الفرعي: ${subtotal} د.ل`,
+    `رسوم التوصيل: ${deliveryFee} د.ل`,
+    `الإجمالي: ${total} د.ل`,
+    "",
+    "شكراً لكم 🙏",
+  ]
+    .filter(Boolean)
+    .join("\n")
 
   try {
-    const resp = await fetch(
-      `https://api.telegram.org/bot${token}/sendMessage`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "HTML",
-        }),
-      }
-    )
+    const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: message }),
+    })
 
     const data = await resp.json()
 
